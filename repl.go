@@ -9,3 +9,4 @@ func cleanInput(text string) []string {
 	var splitText []string = strings.Fields(lowerText)
 	return splitText
 }
+
