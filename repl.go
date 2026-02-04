@@ -16,7 +16,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name string
 	description string
-	callback func( *config) error
+	callback func( *config, ...string) error
 }
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
@@ -40,6 +40,16 @@ func getCommands() map[string]cliCommand {
 			description: "Displays previous 20 locations",
 			callback: commandMapb,
 		},
+		"explore": {
+			name: "explore",
+			description:"Explores a given area",
+			callback: commandExplore,
+		},
+		"catch": {
+			name: "catch",
+			description: "Throw a Pokeball",
+			callback: commandCatch,
+		},
 	}
 } 
 type config struct {
@@ -55,12 +65,16 @@ func startRepl(cfg *config) {
 			 input := scanner.Text()
 			 cleaned := cleanInput(input)
 		   firstWord := cleaned[0]
+			 var param string
+			 if len(cleaned) > 1 {
+			 param = cleaned[1]
+		 		}
 			 commandIndex := getCommands()
 			 cmd, ok := commandIndex[firstWord] 
 			 if !ok {
 				 fmt.Println("unknown command")
 			 }else{
-				 err := cmd.callback(cfg)
+				 err := cmd.callback(cfg, param)
 				 if err != nil {
 					 fmt.Println(err)
 				 }
