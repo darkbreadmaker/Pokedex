@@ -9,16 +9,20 @@ import (
 	"github.com/darkbreadmaker/Pokedex/internal/pokeapi"
 )
 
-func cleanInput(text string) []string {
-	lowerText := strings.ToLower(text)
-	var splitText []string = strings.Fields(lowerText)
-	return splitText
+type config struct {
+	pokeapiClient pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
 }
+
 type cliCommand struct {
 	name string
 	description string
 	callback func( *config, ...string) error
 }
+
+var pokedex map[string]pokeapi.Pokemon = make(map[string]pokeapi.Pokemon)
+
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"exit": {
@@ -62,15 +66,13 @@ func getCommands() map[string]cliCommand {
 			callback: commandPokedex,
 		},
 	}
-} 
-
-type config struct {
-	pokeapiClient pokeapi.Client
-	nextLocationsURL *string
-	prevLocationsURL *string
 }
 
-var pokedex map[string]pokeapi.Pokemon = make(map[string]pokeapi.Pokemon)
+func cleanInput(text string) []string {
+	lowerText := strings.ToLower(text)
+	var splitText []string = strings.Fields(lowerText)
+	return splitText
+}
 
 func startRepl(cfg *config) {
 	jsonData, err := os.ReadFile("myPokedex.json")
