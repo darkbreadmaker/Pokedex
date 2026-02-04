@@ -50,6 +50,16 @@ func getCommands() map[string]cliCommand {
 			description: "Throw a Pokeball",
 			callback: commandCatch,
 		},
+		"inspect": {
+			name: "inspect",
+			description: "Inspect a given Pokemon",
+			callback: commandInspect,
+		},
+		"pokedex": {
+			name: "pokedex",
+			description: "Lists all the Pokemon you've caught",
+			callback: commandPokedex,
+		},
 	}
 } 
 type config struct {

@@ -52,7 +52,7 @@ func commandMapb(cfg *config, param ...string) error {
 }
 
 func commandExplore(cfg *config, param ...string) error {
-	if len(param) == 0 {
+	if param[0] == "" {
 		fmt.Printf("Please provide a location to explore\n")
 	}else{
 		url := "https://pokeapi.co/api/v2/location-area/" + param[0]
@@ -67,8 +67,9 @@ func commandExplore(cfg *config, param ...string) error {
 	return nil
 }
 var pokedex map[string]pokeapi.Pokemon = make(map[string]pokeapi.Pokemon)
+
 func commandCatch(cfg *config, param ...string) error {	
-	if len(param) == 0 {
+	if param[0] == "" {
 		fmt.Printf("Please provide a Pokemon to catch")
 	}else{
 		url := "https://pokeapi.co/api/v2/pokemon/" + param[0]
@@ -86,6 +87,43 @@ func commandCatch(cfg *config, param ...string) error {
 			}else{
 				fmt.Printf("%s escaped!\n", pokemonName)
 			}
+		}
+	}
+	return nil
+}
+
+func commandInspect(cfg *config, param ...string) error {
+	if param[0] == "" {
+		fmt.Println("Please provide a Pokemon to inspect")
+	}else{
+		pokemon, ok := pokedex[param[0]]
+		if ok {
+			fmt.Printf("Name: %s\n", pokemon.Name)
+			fmt.Printf("Height: %d\n", pokemon.Height)
+			fmt.Printf("Weight: %d\n", pokemon.Weight)
+			fmt.Printf("Stats:\n")
+			for i := 0; i < len(pokemon.Stats); i++ {
+				statName := pokemon.Stats[i].Stat.Name
+				statVal := pokemon.Stats[i].BaseStat + pokemon.Stats[i].Effort
+				fmt.Printf("	-%s: %d\n", statName, statVal)
+			}
+			fmt.Printf("Types:\n")
+			for i := 0; i < len(pokemon.Types); i++ {
+				fmt.Printf("	- %s\n", pokemon.Types[i].Type.Name)
+			}
+		}else{
+			fmt.Printf("You haven't caught %s yet\n", param[0])
+		}
+	}
+	return nil
+}
+
+func commandPokedex(cfg *config, param ...string) error {
+	if len(pokedex) == 0 {
+		fmt.Printf("You haven't caught any Pokemon yet\n")
+	}else{
+		for key, _ := range pokedex {
+			fmt.Printf(" - %s\n", key)
 		}
 	}
 	return nil
