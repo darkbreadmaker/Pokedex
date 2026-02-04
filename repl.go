@@ -1,10 +1,11 @@
 package main
 
 import (
-	"strings";
-	"bufio";
-	"os";
-	"fmt";
+	"strings"
+	"encoding/json"
+	"bufio"
+	"os"
+	"fmt"
 	"github.com/darkbreadmaker/Pokedex/internal/pokeapi"
 )
 
@@ -62,12 +63,24 @@ func getCommands() map[string]cliCommand {
 		},
 	}
 } 
+
 type config struct {
 	pokeapiClient pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
 }
+
+var pokedex map[string]pokeapi.Pokemon = make(map[string]pokeapi.Pokemon)
+
 func startRepl(cfg *config) {
+	jsonData, err := os.ReadFile("myPokedex.json")
+	if err != nil {
+		fmt.Printf("Error parsing Pokedex data: %s\n", err)
+	}
+	err = json.Unmarshal(jsonData, &pokedex)
+	if err != nil {
+		fmt.Printf("Error reading Pokedex data: %s\n", err)
+	}
 	scanner := bufio.NewScanner(os.Stdin)
 		for {
 		fmt.Printf("Pokedex > ")

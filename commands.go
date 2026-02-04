@@ -3,10 +3,20 @@ package main
 import (
 	"fmt"
 	"os"
+	"encoding/json"
 	"math/rand"
 	"github.com/darkbreadmaker/Pokedex/internal/pokeapi"
 )
 func commandExit(cfg *config, param ...string) error {
+	fmt.Printf("Saving your Pokedex\n")
+	jsonData, err := json.Marshal(pokedex)
+	if err != nil {
+		fmt.Printf("Error saving Pokedex: %s\n", err)
+	}
+	err = os.WriteFile("myPokedex.json", jsonData, 0664)
+	if err != nil {
+		fmt.Printf("Error saving your Pokedex: %s\n", err)
+	}
 	fmt.Printf("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
@@ -66,7 +76,6 @@ func commandExplore(cfg *config, param ...string) error {
 	}
 	return nil
 }
-var pokedex map[string]pokeapi.Pokemon = make(map[string]pokeapi.Pokemon)
 
 func commandCatch(cfg *config, param ...string) error {	
 	if param[0] == "" {
